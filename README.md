@@ -12,7 +12,7 @@ This cipher specifically uses the Vigenere Theory.
 - Now run this python file in your text editor
 
 ## Feedback
-Any suggestion and feedback is welcome. You can message me on facebook
+Any suggestion and feedback is welcome. You can message me 
 - [Contact on Instagram] @fxrhanansari
 - [Contact me on Gmail] fxrhanansari@gmail.com
 - [Contact me on Twitter] : @fxrhanansari
