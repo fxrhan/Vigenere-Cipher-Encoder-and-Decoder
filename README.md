@@ -1,6 +1,6 @@
 # Vigenere-Cipher-Encoder-and-Decoder
 Encrypt and Decrypt messages with Vigenre Cipher. <br>
-This program encrypts and decrypts tour data into an inreadable format i.e cipher text. <br>
+This program encrypts and decrypts tour data into an unreadable format i.e cipher text. <br>
 This cipher specifically uses the Vigenere Theory.
 ### How to use
 - Install Python (Dont Forget to Tick Add to Path while installing Python)
