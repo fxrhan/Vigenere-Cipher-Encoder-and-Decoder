@@ -1,159 +1,151 @@
-from tkinter import *  #import tkinter module
+import tkinter as tk
+from tkinter import StringVar
+import random
+import base64
 
-import random  #imports other necessary modules
+# Root window configuration
+root = tk.Tk()
+root.geometry("1200x450")  # Adjusted window size for better layout clarity
+root.title("Encryption/Decryption with Vigenere Cipher")
 
-import base64  #Vigenere cipher for encryption/decryption
+# Top frame
+top_frame = tk.Frame(root, width=1600, relief=tk.SUNKEN)
+top_frame.pack(side=tk.TOP)
 
-root = Tk()  #creating root object
+title_label = tk.Label(
+    top_frame,
+    font=("Rockwell", 30, "bold"),  # Updated font size for a cleaner header
+    text="Encryption/Decryption with Vigenere Cipher",
+    fg="black",
+    bd=10,
+    anchor="w",
+)
+title_label.grid(row=0, column=0)
 
-root.geometry("1200x4500")  #defining size of window
+# Left frame
+left_frame = tk.Frame(root, width=800, relief=tk.SUNKEN)
+left_frame.pack(side=tk.LEFT)
 
-root.title("Encryption/Decryption with Vigenere Cipher")  #window title
+# Variables
+msg_var = StringVar()
+key_var = StringVar()
+mode_var = StringVar()
+result_var = StringVar()
 
-Tops = Frame(root, width=1600, relief=SUNKEN)
-Tops.pack(side=TOP)
-
-f1 = Frame(root, width=800, relief=SUNKEN)
-f1.pack(side=LEFT)
-
-#------------------------------------code by Farhan Ansari-------------------------------------------
-
-labelInfo = Label(Tops, font=('Rockwell, Garamond', 50, 'bold'),
-                    text="Encryption/Decryption with\n Vigenere Cipher",
-                    fg="Black", bd=10, anchor='w')
-
-labelInfo.grid(row=0, column=0)
-
-#initializing variables
-Msg = StringVar()
-key = StringVar()
-mode = StringVar()
-Result = StringVar()
-
-# labels for the messages
-labelMessage = Label(f1, font=('Garamond, arial', 16, 'bold'),
-                    text="MESSAGE", bd=16, anchor='w')
-
-labelMessage.grid(row=1, column=0)
-
-# Entry box for the message
-textMessage = Entry(f1, font=('Garamond, arial', 16, 'bold'),
-                    textvariable=Msg, bd=10, insertwidth=4,
-                    bg='powder blue', justify=LEFT)  #####
-
-textMessage.grid(row=1, column=1)
-
-#labels for the key
-labelKey = Label(f1, font=('Garamond, arial', 16, 'bold'),
-                    text="CIPHER KEY (only integer)", bd=16, anchor='w')
-
-labelKey.grid(row=2, column=0)
-
-#Entry box for the key
-textKey = Entry(f1, font=('Garamond, arial', 16, 'bold'),
-                    textvariable=key, bd=10, insertwidth=4,
-                    bg='powder blue', justify=LEFT)
-
-textKey.grid(row=2, column=1)
-
-#label for the mode
-labelMode = Label(f1, font=('Garamond, arial', 16, 'bold'),
-                    text="MODE (type e for encrypt or d for decrypt)",
-                    bd=16, anchor='w')
-
-labelMode.grid(row=3, column=0)
-
-# Entry box for mode
-textMode = Entry(f1, font=('Garamond, arial', 16, 'bold'),
-                    textvariable=mode, bd=10, insertwidth=4,
-                    bg='powder blue', justify=LEFT)
-
-textMode.grid(row=3,column=1)
-
-# Label for result
-labelResult = Label(f1, font=('Garamond, arial', 16, 'bold'),
-                    text="The Result", bd=16, anchor='w')
-
-labelResult.grid(row=2, column=2)
-
-#Entry box for result
-textResult = Entry(f1, font=('Garamond, arial', 16, 'bold'),
-                    textvariable=Result, bd=10, insertwidth=4,
-                    bg='powder blue', justify=LEFT)
-
-textResult.grid(row=2, column=3)
-
-#-----------------------------------code by FARHAN ANSARI----------------------------------
-
-# Vigenere cipher
-
-# Function to encode
-def encode(key,msg):
-    enc = []
-
-    for i in range(len(msg)):
-        key_c = key[i % len(key)]
-        enc_c = chr((ord(msg[i]) + ord(key_c)) % 256)
-
-        enc.append(enc_c)
-        print("enc:", enc)
+# Functions
+def encode(key, msg):
+    """Encodes the message using Vigenere Cipher."""
+    # Optimized encoding logic for clarity and efficiency
+    enc = [(chr((ord(msg[i]) + ord(key[i % len(key)])) % 256)) for i in range(len(msg))]
     return base64.urlsafe_b64encode("".join(enc).encode()).decode()
 
-
-# Function to decode
-def decode(key,enc):
-    dec = []
-
+def decode(key, enc):
+    """Decodes the encrypted message using Vigenere Cipher."""
+    # Optimized decoding logic for clarity and efficiency
     enc = base64.urlsafe_b64decode(enc).decode()
-    for i in range(len(enc)):
-        key_c = key[i % len(key)]
-        dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
-
-        dec.append(dec_c)
-        print("dec:", dec)
+    dec = [chr((256 + ord(enc[i]) - ord(key[i % len(key)])) % 256) for i in range(len(enc))]
     return "".join(dec)
 
+def process_result():
+    """Processes the encryption or decryption."""
+    msg = msg_var.get()
+    key = key_var.get()
+    mode = mode_var.get().lower()
 
-# Function of result
-def Results():
-    msg = Msg.get()
-    k = key.get()
-    m = mode.get()
+    try:
+        if mode == "e":
+            result_var.set(encode(key, msg))
+        elif mode == "d":
+            result_var.set(decode(key, msg))
+        else:
+            result_var.set("Invalid mode! Use 'e' for encrypt or 'd' for decrypt.")
+    except Exception as e:
+        result_var.set(f"Error: {e}")  # Added error handling for robustness
 
-    if (m == 'e'):
-        Result.set(encode(k, msg))
-    else:
-        Result.set(decode(k, msg))
+def reset():
+    """Resets all fields."""
+    # Reset all input fields and result
+    msg_var.set("")
+    key_var.set("")
+    mode_var.set("")
+    result_var.set("")
 
+def exit_app():
+    """Exits the application."""
+    root.destroy()  # Exits the program safely
 
-# Function to exit window
-def qExit():
-    root.destroy()
+# UI Components
+def create_label(frame, text, row, column):
+    """Creates and places a label."""
+    label = tk.Label(
+        frame,
+        font=("Garamond", 16, "bold"),  # Standardized font across all labels
+        text=text,
+        bd=16,
+        anchor="w",
+    )
+    label.grid(row=row, column=column)
 
-# Function to reset window
-def Reset():
-    Msg.set("")
-    key.set("")
-    mode.set("")
-    Result.set("")
+def create_entry(frame, variable, row, column):
+    """Creates and places an entry box."""
+    entry = tk.Entry(
+        frame,
+        font=("Garamond", 16, "bold"),
+        textvariable=variable,
+        bd=10,
+        insertwidth=4,
+        bg="powder blue",
+        justify="left",
+    )
+    entry.grid(row=row, column=column)
 
-#message button
-btnTotal = Button(f1, padx=16, pady=8, bd=16, fg='black',
-                    font=('Garamond, arial', 16, 'bold'),
-                    width=10, text="Show Message", bg="powder blue",
-                    command=Results).grid(row=7,column=1)    
+# Labels and Entries
+create_label(left_frame, "Message", 1, 0)
+create_entry(left_frame, msg_var, 1, 1)
 
-#reset button                    
-btnReset = Button(f1, padx=16, pady=8, bd=16, fg='black',
-                    font=('Garamond, arial', 16, 'bold'),
-                    width=10, text="Reset", bg="green",
-                    command=Reset).grid(row=7,column=2)
+create_label(left_frame, "Cipher Key", 2, 0)
+create_entry(left_frame, key_var, 2, 1)
 
-#Exit button
-btnExit = Button(f1, padx=16, pady=8, bd=16, fg='black',
-                    font=('Garamond, arial', 16, 'bold'),
-                    width=10, text="Exit", bg="red",
-                    command=qExit).grid(row=7,column=3)
+create_label(left_frame, "Mode (e for encrypt, d for decrypt)", 3, 0)
+create_entry(left_frame, mode_var, 3, 1)
 
-#keeps window alive
+create_label(left_frame, "Result", 4, 0)
+result_entry = tk.Entry(
+    left_frame,
+    font=("Garamond", 16, "bold"),
+    textvariable=result_var,
+    bd=10,
+    insertwidth=4,
+    bg="powder blue",
+    justify="left",
+    state="readonly",  # Made the result entry read-only to avoid accidental edits
+)
+result_entry.grid(row=4, column=1)
+
+# Buttons
+tk.Button(
+    left_frame,
+    text="Show Result",
+    font=("Garamond", 16, "bold"),
+    bg="powder blue",
+    command=process_result,
+).grid(row=5, column=1)
+
+tk.Button(
+    left_frame,
+    text="Reset",
+    font=("Garamond", 16, "bold"),
+    bg="green",
+    command=reset,
+).grid(row=5, column=2)
+
+tk.Button(
+    left_frame,
+    text="Exit",
+    font=("Garamond", 16, "bold"),
+    bg="red",
+    command=exit_app,
+).grid(row=5, column=3)
+
+# Keep the window alive
 root.mainloop()
